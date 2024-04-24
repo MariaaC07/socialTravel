@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "60293210629",
+    "project_id": "socialtravel-3f975",
+    "storage_bucket": "socialtravel-3f975.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60293210629:android:b3ffbf19715794b245f26c",
+        "android_client_info": {
+          "package_name": "com.example.travel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmnviEbvogooeZZJDm3_04cnjU6ITzibI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
