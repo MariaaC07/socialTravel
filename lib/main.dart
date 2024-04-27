@@ -3,6 +3,7 @@ import 'package:travel/responsive/mobile_screen_layout.dart';
 import 'package:travel/responsive/responsive_layout_screen.dart';
 import 'package:travel/responsive/web_screen_layout.dart';
 import 'package:travel/screens/login_screen.dart';
+import 'package:travel/screens/signup_screen.dart';
 import 'package:travel/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
       //   mobileScreenLayout: MobileScreenLayout(), 
       //   webScreenLayout: WebScreenLayout(),
       //   ),
-      home: LoginScreen(),
+      home: SignupScreen(),
     );
   }
 }
