@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:travel/resources/storage_methods.dart';
 
 class AuthMethods {
@@ -44,6 +45,24 @@ class AuthMethods {
           'photoUrl': photoUrl
         });
         res = "succes";
+      }
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  //Logging in user
+  Future<String> loginUser(
+      {required String email, required String password}) async {
+    String res = "Some error occured";
+
+    try {
+      if (email.isNotEmpty || password.isNotEmpty) {
+        _auth.signInWithEmailAndPassword(email: email, password: password);
+        res = "succes";
+      } else {
+        res = "Please enter all the fields";
       }
     } catch (err) {
       res = err.toString();
