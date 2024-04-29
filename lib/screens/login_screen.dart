@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:travel/resources/auth_methods.dart';
+import 'package:travel/responsive/mobile_screen_layout.dart';
+import 'package:travel/responsive/responsive_layout_screen.dart';
+import 'package:travel/responsive/web_screen_layout.dart';
+import 'package:travel/screens/signup_screen.dart';
 import 'package:travel/utils/colors.dart';
 import 'package:travel/utils/utils.dart';
 import 'package:travel/widgets/text_field_input.dart';
@@ -32,13 +36,22 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text, password: _passwordController.text);
 
     if (res == "success") {
-      //
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+                mobileScreenLayout: MobileScreenLayout(),
+                webScreenLayout: WebScreenLayout(),
+              )));
     } else {
       showSnackBar(res, context);
     }
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void navigateToSignup() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const SignupScreen()));
   }
 
   @override
@@ -57,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               //svg image
               SvgPicture.asset(
-                'assets/travelLogo.svg',
+                'assets/logo.svg',
                 color: primaryColor,
                 height: 64,
               ),
@@ -112,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text("Don't have an account?"),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: navigateToSignup,
                     child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: const Text("Sign up.",
