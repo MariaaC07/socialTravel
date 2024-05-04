@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void loginUser() async {
     setState(() {
-      _isLoading = true;
+      _isLoading = false;
     });
     String res = await AuthMethods().loginUser(
         email: _emailController.text, password: _passwordController.text);
