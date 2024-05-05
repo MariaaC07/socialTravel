@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // import 'package:travel/providers/user_provider.dart';
 // import 'package:travel/models/user.dart' as model;
 import 'package:travel/utils/colors.dart';
+import 'package:travel/utils/global_var.dart';
 
 class MobileScreenLayout extends StatefulWidget {
   const MobileScreenLayout({Key? key}) : super(key: key);
@@ -45,16 +46,10 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     // model.User user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       body: PageView(
-        children: [
-          Text('feed'),
-          Text('search'),
-          Text('add post'),
-          Text('notif'),
-          Text('profile')
-        ],
         physics: NeverScrollableScrollPhysics(),
         controller: pageController,
         onPageChanged: onPageChanged,
+        children: homeScreenItems,
       ),
       bottomNavigationBar: CupertinoTabBar(
         backgroundColor: mobileBackgroundColor,

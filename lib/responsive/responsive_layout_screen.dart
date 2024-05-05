@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travel/providers/user_provider.dart';
-import 'package:travel/utils/dimension.dart';
+import 'package:travel/utils/global_var.dart';
 
 class ResponsiveLayout extends StatefulWidget {
   final Widget webScreenLayout;
