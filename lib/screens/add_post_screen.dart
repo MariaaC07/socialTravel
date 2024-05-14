@@ -1,13 +1,10 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travel/providers/user_provider.dart';
-
 import 'package:provider/provider.dart';
 import 'package:travel/models/user.dart';
 import 'package:travel/resources/firestore_methods.dart';
-
 import 'package:travel/utils/colors.dart';
 import 'package:travel/utils/utils.dart';
 

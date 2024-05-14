@@ -1,9 +1,5 @@
-// import 'dart:html';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:travel/providers/user_provider.dart';
-// import 'package:travel/models/user.dart' as model;
 import 'package:travel/utils/colors.dart';
 import 'package:travel/utils/global_var.dart';
 
@@ -16,7 +12,6 @@ class MobileScreenLayout extends StatefulWidget {
 
 class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   int _page = 0;
-  // late PageController pageController;
   late PageController pageController;
 
   @override
@@ -31,14 +26,14 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     pageController.dispose();
   }
 
-  void navigationTapped(int page) {
-    pageController.jumpToPage(page);
-  }
-
   void onPageChanged(int page) {
     setState(() {
       _page = page;
     });
+  }
+
+  void navigationTapped(int page) {
+    pageController.jumpToPage(page);
   }
 
   @override
@@ -46,7 +41,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     // model.User user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       body: PageView(
-        physics: NeverScrollableScrollPhysics(),
+        // physics: NeverScrollableScrollPhysics(),
         controller: pageController,
         onPageChanged: onPageChanged,
         children: homeScreenItems,
@@ -83,6 +78,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
               backgroundColor: primaryColor),
         ],
         onTap: navigationTapped,
+        // currentIndex: _page,
       ),
     );
   }
