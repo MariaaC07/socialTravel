@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:travel/utils/colors.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({Key? key}) : super(key: key);
+  final snap;
+  const PostCard({Key? key, required this.snap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,8 @@ class PostCard extends StatelessWidget {
                 CircleAvatar(
                   radius: 16,
                   backgroundImage: NetworkImage(
-                      'https://images.unsplash.com/photo-1519865885898-a54a6f2c7eea?q=80&w=1958&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+                    snap['profImage'],
+                  ),
                 ),
                 Expanded(
                   child: Padding(
@@ -29,7 +32,7 @@ class PostCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'username',
+                          snap['username'],
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Row(
@@ -37,7 +40,17 @@ class PostCard extends StatelessWidget {
                             Icon(Icons.location_on_outlined,
                                 size: 12, color: Colors.grey),
                             Text(
-                              'Franta, Paris',
+                              snap['country'],
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                            Text(
+                              ', ',
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                            Text(
+                              snap['city'],
                               style:
                                   TextStyle(fontSize: 12, color: Colors.grey),
                             ),
@@ -82,7 +95,7 @@ class PostCard extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.35,
             width: double.infinity,
             child: Image.network(
-              'https://plus.unsplash.com/premium_photo-1667428818562-fc8379f23bfe?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+              snap['postUrl'],
               fit: BoxFit.cover,
             ),
           ),
@@ -128,7 +141,7 @@ class PostCard extends StatelessWidget {
                         .subtitle2!
                         .copyWith(fontWeight: FontWeight.w800),
                     child: Text(
-                      '100 likes',
+                      '${snap['likes'].length} likes',
                       style:
                           Theme.of(context).textTheme.bodyText2, //or bodyText2
                     )),
@@ -140,11 +153,11 @@ class PostCard extends StatelessWidget {
                         style: const TextStyle(color: primaryColor),
                         children: [
                           TextSpan(
-                              text: 'username',
+                              text: snap['username'],
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           TextSpan(
-                            text: '   some description',
+                            text: ' ${snap['description']}',
                           )
                         ]),
                   ),
@@ -152,7 +165,7 @@ class PostCard extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.only(top: 8),
-                  child: Text('#whereToEat'),
+                  child: Text(snap['postType']),
                 ),
                 InkWell(
                   onTap: () {},
@@ -168,7 +181,7 @@ class PostCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
-                    '22/01/2024',
+                    DateFormat.yMMMd().format(snap['datePublished'].toDate()),
                     style: const TextStyle(fontSize: 16, color: secondaryColor),
                   ),
                 ),

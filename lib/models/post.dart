@@ -26,20 +26,7 @@ class Post {
       required this.profImage,
       required this.likes});
 
-  //convert to object
-  Map<String, dynamic> toJson() => {
-        "username": username,
-        "uid": uid,
-        "description": description,
-        "city": city,
-        "country": country,
-        "postType": postType,
-        "postId": postId,
-        "datePublished": datePublished,
-        "postUrl": postUrl,
-        "profImage": profImage,
-        "likes": likes
-      };
+  
 
   static Post fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
@@ -57,4 +44,19 @@ class Post {
         likes: snapshot['likes'],
         postId: snapshot['postId'],);
   }
+  
+  //convert to object
+  Map<String, dynamic> toJson() => {
+        "username": username,
+        "uid": uid,
+        "description": description,
+        "city": city,
+        "country": country,
+        "postType": postType,
+        "postId": postId,
+        "datePublished": datePublished,
+        "postUrl": postUrl,
+        "profImage": profImage,
+        "likes": likes
+      };
 }
