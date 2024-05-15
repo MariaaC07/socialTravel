@@ -34,8 +34,9 @@ class AuthMethods {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
           username.isNotEmpty ||
-          bio.isNotEmpty ||
-          file != null) {
+          bio.isNotEmpty //||
+          // file != null
+          ) {
         //register user
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
@@ -79,7 +80,7 @@ class AuthMethods {
 
     try {
       if (email.isNotEmpty || password.isNotEmpty) {
-        _auth.signInWithEmailAndPassword(email: email, password: password);
+        await _auth.signInWithEmailAndPassword(email: email, password: password);
         res = "succes";
       } else {
         res = "Please enter all the fields";
