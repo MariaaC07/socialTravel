@@ -31,7 +31,8 @@ class _PostCardState extends State<PostCard> {
   }
 
   void getComments() async {
-    try {// try stream pentru actualizare instanta
+    try {
+      // try stream pentru actualizare instanta
       QuerySnapshot snap = await FirebaseFirestore.instance
           .collection('posts')
           .doc(widget.snap['postId'])
@@ -116,7 +117,20 @@ class _PostCardState extends State<PostCard> {
                                   ]
                                       .map(
                                         (e) => InkWell(
-                                            onTap: () {},
+                                            onTap: () async {
+                                              // FirestoreMethods().deletePost(
+                                              //     widget.snap['postId']);
+                                              //     Navigator.of(context).pop();
+                                              String result =
+                                                  await FirestoreMethods()
+                                                      .deletePost(widget
+                                                          .snap['postId']);
+                                              Navigator.of(context).pop();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(content: Text(result)),
+                                              );
+                                            },
                                             child: Container(
                                                 padding:
                                                     const EdgeInsets.symmetric(

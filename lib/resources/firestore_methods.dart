@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:travel/models/post.dart';
 import 'package:travel/resources/storage_methods.dart';
 import 'package:uuid/uuid.dart';
@@ -61,8 +62,8 @@ class FirestoreMethods {
     }
   }
 
-  Future<void> postComment(String postId, String text, String uid,
-      String name, String profilePic) async {
+  Future<void> postComment(String postId, String text, String uid, String name,
+      String profilePic) async {
     try {
       if (text.isNotEmpty) {
         String commentId = const Uuid().v1();
@@ -84,6 +85,59 @@ class FirestoreMethods {
       }
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  //deleting posts
+  // Future<void> deletePost(String postId) async {
+  //   try {
+  //     _firestore.collection('posts').doc(postId).delete();
+  //   } catch (err) {
+  //     print(err.toString());
+  //   }
+  // }
+
+  // Future<void> deletePost(String postId) async {
+  //   final userId = FirebaseAuth.instance.currentUser?.uid;
+  //   try {
+  //     final postSnapshot =
+  //         await _firestore.collection('posts').doc(postId).get();
+  //     if (postSnapshot.exists) {
+  //       final postUserId = postSnapshot.data()?['uid'];
+  //       if (postUserId == userId) {
+  //         await _firestore.collection('posts').doc(postId).delete();
+  //         print("Post deleted successfully");
+  //       } else {
+  //         print("You are not authorized to delete this post");
+  //       }
+  //     } else {
+  //       print("Post not found");
+  //     }
+  //   } catch (err) {
+  //     print(err.toString());
+  //   }
+  // }
+
+   Future<String> deletePost(String postId) async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      return "User not logged in";
+    }
+    try {
+      final postSnapshot = await _firestore.collection('posts').doc(postId).get();
+      if (postSnapshot.exists) {
+        final postUserId = postSnapshot.data()?['uid'];
+        if (postUserId == userId) {
+          await _firestore.collection('posts').doc(postId).delete();
+          return "Post deleted successfully";
+        } else {
+          return "You are not authorized to delete this post";
+        }
+      } else {
+        return "Post not found";
+      }
+    } catch (err) {
+      return err.toString();
     }
   }
 }
