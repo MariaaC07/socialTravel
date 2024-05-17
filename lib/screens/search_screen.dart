@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:travel/screens/profile_screen.dart';
 import 'package:travel/utils/colors.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -74,22 +75,31 @@ class _SearchScreenState extends State<SearchScreen> {
                   itemBuilder: (context, index) {
                     final data = docs[index].data() as Map<String, dynamic>;
 
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: data.containsKey('photoUrl') && data['photoUrl'] != null
-                            ? NetworkImage(data['photoUrl'])
-                            : null,
-                        child: data.containsKey('photoUrl') && data['photoUrl'] != null
-                            ? null
-                            : Text(
-                                data['username'] != null && data['username'].isNotEmpty
-                                    ? data['username'][0].toUpperCase()
-                                    : '?',
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                        backgroundColor: Colors.grey,
+                    return InkWell(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ProfileScreen(
+                              uid: (snapshot.data! as dynamic).docs[index]
+                                  ['uid']))),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: data.containsKey('photoUrl') &&
+                                  data['photoUrl'] != null
+                              ? NetworkImage(data['photoUrl'])
+                              : null,
+                          child: data.containsKey('photoUrl') &&
+                                  data['photoUrl'] != null
+                              ? null
+                              : Text(
+                                  data['username'] != null &&
+                                          data['username'].isNotEmpty
+                                      ? data['username'][0].toUpperCase()
+                                      : '?',
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                          backgroundColor: Colors.grey,
+                        ),
+                        title: Text(data['username'] ?? 'No username'),
                       ),
-                      title: Text(data['username'] ?? 'No username'),
                     );
                   },
                 );
@@ -117,6 +127,3 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 }
-
-
-
