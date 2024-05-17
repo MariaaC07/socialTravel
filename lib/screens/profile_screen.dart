@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:travel/resources/firestore_methods.dart';
 import 'package:travel/utils/colors.dart';
 import 'package:travel/utils/utils.dart';
 import 'package:travel/widgets/follow_button.dart';
@@ -121,14 +122,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 backgroundColor: Colors.white,
                                                 textColor: Colors.black,
                                                 borderColor: Colors.grey,
-                                                function: () {},
+                                                function: () async {
+                                                  await FirestoreMethods()
+                                                      .followUser(
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid,
+                                                    userData['uid'],
+                                                  );
+                                                  setState(() {
+                                                    isFollowing =false;
+                                                    followers--;
+                                                  });
+                                                },
                                               )
                                             : FollowButton(
                                                 text: 'Follow',
                                                 backgroundColor: Colors.blue,
                                                 textColor: Colors.white,
                                                 borderColor: Colors.blue,
-                                                function: () {},
+                                                function: () async {
+                                                  await FirestoreMethods()
+                                                      .followUser(
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid,
+                                                    userData['uid'],
+                                                  );
+                                                  setState(() {
+                                                    isFollowing = true;
+                                                    followers++;
+                                                  });
+                                                },
                                               )
                                   ],
                                 )
@@ -177,13 +200,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   mainAxisSpacing: 1.5,
                                   childAspectRatio: 1),
                           itemBuilder: (context, index) {
-                            DocumentSnapshot snap = (snapshot.data! as dynamic).docs[index];
+                            DocumentSnapshot snap =
+                                (snapshot.data! as dynamic).docs[index];
 
                             return Container(
-                              child: Image(image: NetworkImage(
-                                snap['postUrl']
+                              child: Image(
+                                image: NetworkImage(snap['postUrl']),
+                                fit: BoxFit.cover,
                               ),
-                              fit: BoxFit.cover,),
                             );
                           });
                     })
