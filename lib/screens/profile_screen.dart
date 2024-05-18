@@ -8,6 +8,7 @@ import 'package:travel/screens/login_screen.dart';
 import 'package:travel/utils/colors.dart';
 import 'package:travel/utils/utils.dart';
 import 'package:travel/widgets/follow_button.dart';
+import 'package:travel/widgets/post_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -199,6 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         );
                       }
                       return GridView.builder(
+                          physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: (snapshot.data! as dynamic).docs.length,
                           gridDelegate:
@@ -211,7 +213,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             DocumentSnapshot snap =
                                 (snapshot.data! as dynamic).docs[index];
 
-                            return Container(
+                            return GestureDetector(
+                              onTap: () => showDialog(
+                                context: context,
+                                builder: (context) => Stack(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () => Navigator.of(context).pop(),
+                                      child: Container(
+                                        color: Colors.black.withOpacity(
+                                            0.4), 
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                            maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.9,
+                                            maxHeight: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.9), 
+                                        child: Card(
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              children: [
+                                                PostCard(
+                                                    snap:
+                                                        snap), 
+                                                SizedBox(
+                                                    height:
+                                                        16.0), 
+                                               
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                               child: Image(
                                 image: NetworkImage(snap['postUrl']),
                                 fit: BoxFit.cover,

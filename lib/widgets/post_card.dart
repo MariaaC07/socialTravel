@@ -278,7 +278,13 @@ class _PostCardState extends State<PostCard> {
                   child: Text(widget.snap['postType']),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => CommentsScreen(
+                            snap: widget.snap,
+                          ),
+                        ),
+                      ),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
