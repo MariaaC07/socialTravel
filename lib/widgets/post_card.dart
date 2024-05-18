@@ -9,6 +9,7 @@ import 'package:travel/providers/user_provider.dart';
 import 'package:travel/resources/firestore_methods.dart';
 import 'package:travel/screens/comments_screen.dart';
 import 'package:travel/utils/colors.dart';
+import 'package:travel/utils/global_var.dart';
 import 'package:travel/utils/utils.dart';
 import 'package:travel/widgets/like_animation.dart';
 
@@ -50,9 +51,16 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final model.User user = Provider.of<UserProvider>(context).getUser;
+    final width = MediaQuery.of(context).size.width;
 
     return Container(
-      color: mobileBackgroundColor,
+      decoration: BoxDecoration(
+          border: Border.all(
+              color: width > webScreenSize
+                  ? secondaryColor
+                  : mobileBackgroundColor),
+          color: mobileBackgroundColor),
+      // color: mobileBackgroundColor,
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
