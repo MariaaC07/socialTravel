@@ -60,7 +60,6 @@ class _PostCardState extends State<PostCard> {
                   ? secondaryColor
                   : mobileBackgroundColor),
           color: mobileBackgroundColor),
-      // color: mobileBackgroundColor,
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         children: [
