@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:travel/screens/chat_screen.dart';
 import 'package:travel/utils/colors.dart';
 import 'package:travel/utils/global_var.dart';
 import 'package:travel/widgets/post_card.dart';
@@ -41,6 +42,21 @@ class _FeedScreenState extends State<FeedScreen> {
           width > webScreenSize ? webBackgroundColor : mobileBackgroundColor,
       appBar: AppBar(
         backgroundColor: width > webScreenSize ? null : mobileBackgroundColor,
+        actions: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.messenger_outline,
+                    color: primaryColor,
+                  ),
+                 onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ChatScreen(
+                            // snap: widget.snap,
+                          ),
+                        ),
+                      ),
+                ),
+              ],
         bottom: width >
                 webScreenSize // Adăugați TextField-ul de căutare la AppBar pentru ecranele web
             ? PreferredSize(
@@ -74,6 +90,7 @@ class _FeedScreenState extends State<FeedScreen> {
                       });
                     },
                   ),
+                  
                 ),
               )
             : null,
