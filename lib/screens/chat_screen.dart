@@ -24,6 +24,12 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                   Text(
                     "Chat",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -54,7 +60,9 @@ class _ChatScreenState extends State<ChatScreen> {
                             'https://plus.unsplash.com/premium_photo-1714839367832-43d2363fff46?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8'),
                         radius: 40,
                       ),
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -76,11 +84,13 @@ class _ChatScreenState extends State<ChatScreen> {
                         ],
                       ),
                       Spacer(),
-                      Text("04:30", style: TextStyle(
-                        color: Colors.white54,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400
-                      ),)
+                      Text(
+                        "04:30",
+                        style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                      )
                     ],
                   ),
                 ],
