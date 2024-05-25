@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:travel/models/chats.dart';
 import 'package:travel/models/post.dart';
 import 'package:travel/resources/storage_methods.dart';
 import 'package:uuid/uuid.dart';
@@ -88,36 +89,6 @@ class FirestoreMethods {
     }
   }
 
-  //deleting posts
-  // Future<void> deletePost(String postId) async {
-  //   try {
-  //     _firestore.collection('posts').doc(postId).delete();
-  //   } catch (err) {
-  //     print(err.toString());
-  //   }
-  // }
-
-  // Future<void> deletePost(String postId) async {
-  //   final userId = FirebaseAuth.instance.currentUser?.uid;
-  //   try {
-  //     final postSnapshot =
-  //         await _firestore.collection('posts').doc(postId).get();
-  //     if (postSnapshot.exists) {
-  //       final postUserId = postSnapshot.data()?['uid'];
-  //       if (postUserId == userId) {
-  //         await _firestore.collection('posts').doc(postId).delete();
-  //         print("Post deleted successfully");
-  //       } else {
-  //         print("You are not authorized to delete this post");
-  //       }
-  //     } else {
-  //       print("Post not found");
-  //     }
-  //   } catch (err) {
-  //     print(err.toString());
-  //   }
-  // }
-
   Future<String> deletePost(String postId) async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) {
@@ -166,5 +137,76 @@ class FirestoreMethods {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<void> createChatRoom(
+      String chatRoomId, String sender, String receiver) async {
+    final chatRoomRef =
+        FirebaseFirestore.instance.collection('chatRooms').doc(chatRoomId);
+
+    final chatRoom = ChatRoom(
+      chatRoomId: chatRoomId,
+      sender: sender,
+      receiver: receiver,
+      lastMessage: '',
+      timestamp: Timestamp.now(),
+    );
+
+    await chatRoomRef.set(chatRoom.toMap());
+  }
+
+  static Future<List<ChatRoom>> getChatRoomsForUser(String userId) async {
+    QuerySnapshot chatRoomsSnapshotSender = await FirebaseFirestore.instance
+        .collection('chatRooms')
+        .where('sender', isEqualTo: userId)
+        .get();
+
+    QuerySnapshot chatRoomsSnapshotReceiver = await FirebaseFirestore.instance
+        .collection('chatRooms')
+        .where('receiver', isEqualTo: userId)
+        .get();
+
+    List<ChatRoom> chatRooms = [];
+
+    chatRoomsSnapshotSender.docs.forEach((doc) {
+      ChatRoom chatRoom = ChatRoom.fromDocument(doc);
+      chatRooms.add(chatRoom);
+    });
+
+    chatRoomsSnapshotReceiver.docs.forEach((doc) {
+      ChatRoom chatRoom = ChatRoom.fromDocument(doc);
+      chatRooms.add(chatRoom);
+    });
+
+    return chatRooms;
+  }
+
+  Future<void> sendMessage(String chatRoomId, Message message) async {
+    final messageRef = FirebaseFirestore.instance
+        .collection('chatRooms')
+        .doc(chatRoomId)
+        .collection('messages')
+        .doc();
+
+    await messageRef.set(message.toMap());
+
+    final chatRoomRef =
+        FirebaseFirestore.instance.collection('chatRooms').doc(chatRoomId);
+
+    await chatRoomRef.update({
+      'lastMessage': message.content,
+      'timestamp': message.timestamp,
+    });
+  }
+
+  Stream<List<Message>> getMessages(String chatRoomId) {
+    return FirebaseFirestore.instance
+        .collection('chatRooms')
+        .doc(chatRoomId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => Message.fromDocument(doc)).toList());
   }
 }

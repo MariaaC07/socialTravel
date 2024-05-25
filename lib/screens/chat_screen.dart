@@ -1,7 +1,11 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:travel/utils/colors.dart';
+import 'package:travel/models/chats.dart';
+import 'package:travel/resources/firestore_methods.dart';
+import 'package:travel/screens/conversation_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -11,10 +15,55 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  bool search = false;
+  bool isShowUser = false;
+  final TextEditingController searchController = TextEditingController();
+  String? currentUsername;
+
+  @override
+  void initState() {
+    super.initState();
+    searchController.addListener(() {
+      if (searchController.text.isEmpty) {
+        setState(() {
+          isShowUser = false;
+        });
+      }
+    });
+    getCurrentUsername();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> getCurrentUsername() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        currentUsername = userDoc['username'];
+      });
+    }
+  }
+
+  String getChatRoomIdByUsername(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$b\_$a";
+    } else {
+      return "$a\_$b";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: mobileBackgroundColor,
+      backgroundColor: Colors.black,
       body: Container(
         child: Column(
           children: [
@@ -30,72 +79,187 @@ class _ChatScreenState extends State<ChatScreen> {
                       Navigator.pop(context);
                     },
                   ),
-                  Text(
-                    "Chat",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  Container(
+                  search
+                      ? Expanded(
+                          child: TextFormField(
+                            controller: searchController,
+                            decoration: const InputDecoration(
+                                labelText: 'Search for a user'),
+                            onFieldSubmitted: (String _) {
+                              setState(() {
+                                isShowUser = searchController.text.isNotEmpty;
+                              });
+                            },
+                          ),
+                        )
+                      : Text(
+                          "Chat",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        search = true;
+                      });
+                    },
+                    child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20)),
-                      child: Icon(Icons.search))
+                      child: Icon(Icons.search, color: Colors.white),
+                    ),
+                  ),
                 ],
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-              height: MediaQuery.of(context).size.height / 1.15,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.grey[900],
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20))),
-              child: Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        backgroundImage: NetworkImage(
-                            'https://plus.unsplash.com/premium_photo-1714839367832-43d2363fff46?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8'),
-                        radius: 40,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(width: 10),
-                          Text(
-                            "User name",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "This is a message",
-                            style: TextStyle(
-                                color: Colors.white54,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      Text(
-                        "04:30",
-                        style: TextStyle(
-                            color: Colors.white54,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400),
+                      topRight: Radius.circular(20)),
+                ),
+                child: isShowUser
+                    ? FutureBuilder<QuerySnapshot>(
+                        future: FirebaseFirestore.instance
+                            .collection('users')
+                            .where('username',
+                                isGreaterThanOrEqualTo: searchController.text)
+                            .where('username',
+                                isLessThan: searchController.text + 'z')
+                            .get(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+
+                          final docs = snapshot.data!.docs;
+
+                          return ListView.builder(
+                            itemCount: docs.length,
+                            itemBuilder: (context, index) {
+                              final data =
+                                  docs[index].data() as Map<String, dynamic>;
+
+                              return InkWell(
+                                onTap: () async {
+                                  search = false;
+                                  setState(() {});
+                                  String otherUsername = data['username'];
+                                  var chatRoomId = getChatRoomIdByUsername(
+                                      currentUsername!, otherUsername);
+
+                                  // camera de chat între utilizatori
+                                  await FirestoreMethods().createChatRoom(
+                                      chatRoomId,
+                                      currentUsername!,
+                                      otherUsername);
+
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => ConversationScreen(
+                                      chatRoomId: chatRoomId,
+                                      otherUser: otherUsername,
+                                    ),
+                                  ));
+                                },
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundImage:
+                                        data.containsKey('photoUrl') &&
+                                                data['photoUrl'] != null
+                                            ? NetworkImage(data['photoUrl'])
+                                            : null,
+                                    child: data.containsKey('photoUrl') &&
+                                            data['photoUrl'] != null
+                                        ? null
+                                        : Text(
+                                            data['username'] != null &&
+                                                    data['username'].isNotEmpty
+                                                ? data['username'][0]
+                                                    .toUpperCase()
+                                                : '?',
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                    backgroundColor: Colors.grey,
+                                  ),
+                                  title: Text(data['username'] ?? 'No username',
+                                      style: TextStyle(color: Colors.white)),
+                                ),
+                              );
+                            },
+                          );
+                        },
                       )
-                    ],
-                  ),
-                ],
+                    : currentUsername == null
+                        ? Center(child: CircularProgressIndicator())
+                        : FutureBuilder<List<ChatRoom>>(
+                            future: FirestoreMethods.getChatRoomsForUser(
+                                currentUsername!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              }
+
+                              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                print(
+                                    "No chat rooms found for user: $currentUsername");
+                                return Center(
+                                  child: Text(
+                                    'No conversations yet',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                );
+                              }
+
+                              final chatRooms = snapshot.data!;
+                              print(
+                                  "Found ${chatRooms.length} chat rooms for user: $currentUsername");
+
+                              return ListView.builder(
+                                itemCount: chatRooms.length,
+                                itemBuilder: (context, index) {
+                                  final chatRoom = chatRooms[index];
+
+                                  final otherUser =
+                                      chatRoom.receiver != currentUsername
+                                          ? chatRoom.receiver
+                                          : chatRoom.sender;
+
+                                  final lastMessage = chatRoom.lastMessage;
+                                  print(
+                                      "ChatRoomId: ${chatRoom.chatRoomId}, OtherUser: $otherUser, LastMessage: $lastMessage");
+
+                                  return ListTile(
+                                    title: Text(otherUser,
+                                        style: TextStyle(color: Colors.white)),
+                                    subtitle: Text(lastMessage,
+                                        style:
+                                            TextStyle(color: Colors.white54)),
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            ConversationScreen(
+                                          chatRoomId: chatRoom.chatRoomId,
+                                          otherUser: otherUser,
+                                        ),
+                                      ));
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                          ),
               ),
-            )
+            ),
           ],
         ),
       ),
