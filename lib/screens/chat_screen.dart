@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, library_private_types_in_public_api, unnecessary_string_escapes, use_build_context_synchronously, avoid_print, avoid_unnecessary_containers
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -130,7 +130,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             .where('username',
                                 isGreaterThanOrEqualTo: searchController.text)
                             .where('username',
-                                isLessThan: searchController.text + 'z')
+                                isLessThan: '${searchController.text}z')
                             .get(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
@@ -220,9 +220,9 @@ class _ChatScreenState extends State<ChatScreen> {
                               }
 
                               final chatRooms = snapshot.data!;
+
                               print(
                                   "Found ${chatRooms.length} chat rooms for user: $currentUsername");
-
                               return ListView.builder(
                                 itemCount: chatRooms.length,
                                 itemBuilder: (context, index) {
@@ -234,25 +234,70 @@ class _ChatScreenState extends State<ChatScreen> {
                                           : chatRoom.sender;
 
                                   final lastMessage = chatRoom.lastMessage;
-                                  print(
-                                      "ChatRoomId: ${chatRoom.chatRoomId}, OtherUser: $otherUser, LastMessage: $lastMessage");
+                                  final formattedTimestamp =
+                                      chatRoom.getFormattedTimestamp();
 
-                                  return ListTile(
-                                    title: Text(otherUser,
-                                        style: TextStyle(color: Colors.white)),
-                                    subtitle: Text(lastMessage,
-                                        style:
-                                            TextStyle(color: Colors.white54)),
-                                    onTap: () {
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (context) =>
-                                            ConversationScreen(
-                                          chatRoomId: chatRoom.chatRoomId,
-                                          otherUser: otherUser,
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                            color: Colors.grey.shade800,
+                                            width: 0.5),
+                                      ),
+                                    ),
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 16.0, vertical: 8.0),
+                                      title: Text(
+                                        otherUser,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0,
                                         ),
-                                      ));
-                                    },
+                                      ),
+                                      subtitle: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  lastMessage,
+                                                  style: TextStyle(
+                                                    color: Colors.white70,
+                                                    fontSize: 14.0,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Text(
+                                            formattedTimestamp,
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 12.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                          builder: (context) =>
+                                              ConversationScreen(
+                                            chatRoomId: chatRoom.chatRoomId,
+                                            otherUser: otherUser,
+                                          ),
+                                        ));
+                                      },
+                                    ),
                                   );
                                 },
                               );

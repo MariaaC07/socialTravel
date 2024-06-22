@@ -1,23 +1,10 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: use_super_parameters, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:travel/utils/colors.dart';
 import 'package:travel/utils/global_var.dart';
 
-// class WebScreenLayout extends StatelessWidget{
-
-//    const WebScreenLayout({Key? key}) : super(key: key);
-
-//    @override
-//    Widget build(BuildContext  context){
-//      return Scaffold(
-//       body: Center(
-//         child: Text('This is web'),
-//       ),
-//      );
-//    }
-
-//  }
 
 class WebScreenLayout extends StatefulWidget {
   const WebScreenLayout({Key? key}) : super(key: key);
@@ -57,7 +44,6 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
 
   @override
   Widget build(BuildContext context) {
-    // model.User user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
@@ -86,24 +72,24 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
                 Icons.add_a_photo,
                 color: _page == 2 ? primaryColor : secondaryColor,
               )),
+          // IconButton(
+          //     onPressed: () => navigationTapped(3),
+          //     icon: Icon(
+          //       Icons.favorite,
+          //       color: _page == 3 ? primaryColor : secondaryColor,
+          //     )),
           IconButton(
               onPressed: () => navigationTapped(3),
               icon: Icon(
-                Icons.favorite,
-                color: _page == 3 ? primaryColor : secondaryColor,
-              )),
-          IconButton(
-              onPressed: () => navigationTapped(4),
-              icon: Icon(
                 Icons.person,
-                color: _page == 4 ? primaryColor : secondaryColor,
+                color: _page == 3 ? primaryColor : secondaryColor,
               )),
         ],
       ),
       body: PageView(
-        children: homeScreenItems,
         controller: pageController,
         onPageChanged: onPageChanged,
+        children: homeScreenItems,
       ),
     );
   }

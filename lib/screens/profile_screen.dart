@@ -1,6 +1,7 @@
+// ignore_for_file: use_super_parameters, library_private_types_in_public_api
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:travel/resources/auth_methods.dart';
 import 'package:travel/resources/firestore_methods.dart';
@@ -44,8 +45,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       //get post lenght
       var postSnap = await FirebaseFirestore.instance
           .collection('posts')
-          .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          // .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .where('uid', isEqualTo: widget.uid)
           .get();
+
       postLen = postSnap.docs.length;
       userData = userSnap.data()!;
       followers = userSnap.data()!['followers'].length;
@@ -174,7 +177,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.only(top: 15),
                         child: Text(
                           userData['username'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                       Container(
@@ -221,8 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     GestureDetector(
                                       onTap: () => Navigator.of(context).pop(),
                                       child: Container(
-                                        color: Colors.black.withOpacity(
-                                            0.4), 
+                                        color: Colors.black.withOpacity(0.4),
                                       ),
                                     ),
                                     Center(
@@ -235,18 +237,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             maxHeight: MediaQuery.of(context)
                                                     .size
                                                     .height *
-                                                0.9), 
+                                                0.9),
                                         child: Card(
                                           child: SingleChildScrollView(
                                             child: Column(
                                               children: [
-                                                PostCard(
-                                                    snap:
-                                                        snap), 
-                                                SizedBox(
-                                                    height:
-                                                        16.0), 
-                                               
+                                                PostCard(snap: snap),
+                                                SizedBox(height: 16.0),
                                               ],
                                             ),
                                           ),

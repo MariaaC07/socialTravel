@@ -33,6 +33,15 @@ class ChatRoom {
       'timestamp': timestamp,
     };
   }
+
+  String getFormattedTimestamp() {
+    DateTime dateTime = timestamp.toDate(); 
+    String formattedTime =
+        '${dateTime.hour}:${dateTime.minute} ${dateTime.day}/${dateTime.month}/${dateTime.year}';
+    return formattedTime;
+  }
+  
+
 }
 
 class Message {

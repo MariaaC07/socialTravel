@@ -1,11 +1,10 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_super_parameters, library_private_types_in_public_api
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:travel/models/chats.dart';
 import 'package:travel/resources/firestore_methods.dart';
-
 
 class ConversationScreen extends StatefulWidget {
   final String chatRoomId;
@@ -17,7 +16,6 @@ class ConversationScreen extends StatefulWidget {
   @override
   _ConversationScreenState createState() => _ConversationScreenState();
 }
-
 
 class _ConversationScreenState extends State<ConversationScreen> {
   final TextEditingController _messageController = TextEditingController();
@@ -64,7 +62,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
         child: currentUsername == null
             ? Center(child: CircularProgressIndicator())
             : Container(
-                margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                margin: EdgeInsets.all(20), // Marginea globală pentru container
                 child: Column(
                   children: [
                     Row(
@@ -80,16 +78,18 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         Text(
                           widget.otherUser,
                           style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
                     SizedBox(height: 20),
                     Expanded(
                       child: StreamBuilder<List<Message>>(
-                        stream: FirestoreMethods().getMessages(widget.chatRoomId),
+                        stream:
+                            FirestoreMethods().getMessages(widget.chatRoomId),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return Center(child: CircularProgressIndicator());
@@ -102,21 +102,29 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             itemCount: messages.length,
                             itemBuilder: (context, index) {
                               final message = messages[index];
+                              // Verificați dacă mesajul a fost trimis de utilizatorul curent sau nu
+                              final isCurrentUser =
+                                  message.sender == currentUsername;
+
                               return Container(
                                 padding: EdgeInsets.all(10),
-                                alignment: message.sender == currentUsername
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                alignment: isCurrentUser
                                     ? Alignment.centerRight
                                     : Alignment.centerLeft,
-                                decoration: BoxDecoration(
-                                  color: message.sender == currentUsername
-                                      ? Colors.blue[300]
-                                      : Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                margin: EdgeInsets.symmetric(vertical: 5),
-                                child: Text(
-                                  message.content,
-                                  style: TextStyle(color: Colors.black, fontSize: 15),
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: isCurrentUser
+                                        ? Colors.blue[300]
+                                        : Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    message.content,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 15),
+                                  ),
                                 ),
                               );
                             },

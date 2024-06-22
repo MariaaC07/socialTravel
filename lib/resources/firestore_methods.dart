@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, avoid_function_literals_in_foreach_calls
+
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -138,6 +140,8 @@ class FirestoreMethods {
       print(e.toString());
     }
   }
+
+  
 
   Future<void> createChatRoom(
       String chatRoomId, String sender, String receiver) async {

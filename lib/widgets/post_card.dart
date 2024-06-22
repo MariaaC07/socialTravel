@@ -1,7 +1,7 @@
+// ignore_for_file: sort_child_properties_last, prefer_const_constructors, use_build_context_synchronously, prefer_typing_uninitialized_variables, use_super_parameters, deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-// import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:travel/models/user.dart' as model;
@@ -47,6 +47,8 @@ class _PostCardState extends State<PostCard> {
 
     setState(() {});
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -125,9 +127,6 @@ class _PostCardState extends State<PostCard> {
                                       .map(
                                         (e) => InkWell(
                                             onTap: () async {
-                                              // FirestoreMethods().deletePost(
-                                              //     widget.snap['postId']);
-                                              //     Navigator.of(context).pop();
                                               String result =
                                                   await FirestoreMethods()
                                                       .deletePost(widget
@@ -221,20 +220,20 @@ class _PostCardState extends State<PostCard> {
                   icon: const Icon(
                     Icons.comment,
                   )),
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.send,
-                  )),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: IconButton(
-                    icon: const Icon(Icons.bookmark),
-                    onPressed: () {},
-                  ),
-                ),
-              ),
+              // IconButton(
+              //     onPressed: () {},
+              //     icon: const Icon(
+              //       Icons.send,
+              //     )),
+              // Expanded(
+              //   child: Align(
+              //     alignment: Alignment.bottomRight,
+              //     child: IconButton(
+              //       icon: const Icon(Icons.bookmark),
+              //       onPressed: () {},
+              //     ),
+              //   ),
+              // ),
             ],
           ),
           //description + comments
@@ -278,12 +277,12 @@ class _PostCardState extends State<PostCard> {
                 ),
                 InkWell(
                   onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => CommentsScreen(
-                            snap: widget.snap,
-                          ),
-                        ),
+                    MaterialPageRoute(
+                      builder: (context) => CommentsScreen(
+                        snap: widget.snap,
                       ),
+                    ),
+                  ),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(

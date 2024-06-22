@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:travel/utils/colors.dart';
@@ -66,14 +68,14 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
                   color: _page == 2 ? primaryColor : secondaryColor),
               label: '',
               backgroundColor: primaryColor),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.favorite,
-                  color: _page == 3 ? primaryColor : secondaryColor),
-              label: '',
-              backgroundColor: primaryColor),
+          // BottomNavigationBarItem(
+          //     icon: Icon(Icons.favorite,
+          //         color: _page == 3 ? primaryColor : secondaryColor),
+          //     label: '',
+          //     backgroundColor: primaryColor),
           BottomNavigationBarItem(
               icon: Icon(Icons.person,
-                  color: _page == 4 ? primaryColor : secondaryColor),
+                  color: _page == 3 ? primaryColor : secondaryColor),
               label: '',
               backgroundColor: primaryColor),
         ],

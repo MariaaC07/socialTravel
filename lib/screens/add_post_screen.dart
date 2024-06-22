@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters, library_private_types_in_public_api, use_build_context_synchronously
+
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -165,7 +167,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     CircleAvatar(
                       backgroundImage: NetworkImage(user.photoUrl),
                     ),
-                    SizedBox(
+                    SizedBox( 
                       height: MediaQuery.of(context).size.height * 0.1,
                       width: MediaQuery.of(context).size.width * 0.5,
                       child: TextField(
@@ -213,7 +215,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           maxLines: 8,
                         ),
                       ),
-                      SizedBox(height: 10), // Spațiu între text box-uri
+                      const SizedBox(height: 10), // Spațiu între text box-uri
                       // Add City
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.1,
@@ -227,19 +229,19 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           maxLines: 8,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                           height: 10), // Spațiu între text box-uri și dropdown
                       // DropdownButton
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Choose your post type',
                             style: TextStyle(
                               fontSize: 15,
                             ),
                           ),
-                          SizedBox(width: 10), // Spațiu între text și dropdown
+                          const SizedBox(width: 10), // Spațiu între text și dropdown
                           DropdownButton<String>(
                             value: _postTypeOption,
                             onChanged: (String? newValue) {

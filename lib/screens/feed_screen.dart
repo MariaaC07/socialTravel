@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, use_super_parameters
+
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +16,8 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  late TextEditingController
-      _searchController; 
-  late Stream<QuerySnapshot<Map<String, dynamic>>>
-      _postsStream; 
+  late TextEditingController _searchController;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _postsStream;
   bool isShowPost = false;
 
   @override
@@ -43,57 +43,56 @@ class _FeedScreenState extends State<FeedScreen> {
       appBar: AppBar(
         backgroundColor: width > webScreenSize ? null : mobileBackgroundColor,
         actions: [
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: const InputDecoration(
+                        hintText: 'Search a city...',
+                        filled: false,
+                        fillColor: Colors.black,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide: BorderSide.none,
+                        ),
+                        prefixIcon: Icon(Icons.search),
+                      ),
+                      onChanged: (query) {
+                        setState(() {
+                          if (query.isEmpty) {
+                            _postsStream = FirebaseFirestore.instance
+                                .collection('posts')
+                                .snapshots();
+                          } else {
+                            _postsStream = FirebaseFirestore.instance
+                                .collection('posts')
+                                .where('city', isEqualTo: query)
+                                .snapshots();
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                ),
                 IconButton(
                   icon: const Icon(
                     Icons.messenger_outline,
                     color: primaryColor,
                   ),
-                 onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ChatScreen(
-                            // snap: widget.snap,
-                          ),
-                        ),
-                      ),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ChatScreen(),
+                    ),
+                  ),
                 ),
               ],
-        bottom: width >
-                webScreenSize // Adăugați TextField-ul de căutare la AppBar pentru ecranele web
-            ? PreferredSize(
-                preferredSize: const Size.fromHeight(60),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: const InputDecoration(
-                      hintText: 'Search...',
-                      filled: false,
-                      fillColor: Colors.black,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                    onChanged: (query) {
-                      setState(() {
-                        if (query.isEmpty) {
-                          _postsStream = FirebaseFirestore.instance
-                              .collection('posts')
-                              .snapshots();
-                        } else {
-                          _postsStream = FirebaseFirestore.instance
-                              .collection('posts')
-                              .where('city', isEqualTo: query)
-                              .snapshots();
-                        }
-                      });
-                    },
-                  ),
-                  
-                ),
-              )
-            : null,
+            ),
+          ),
+        ],
       ),
       body: StreamBuilder(
         stream: _postsStream,
